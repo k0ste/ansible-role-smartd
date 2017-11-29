@@ -1,0 +1,9 @@
+---
+- name: smartd | Generate smartd configuration
+  template:
+    src: "smartd.j2"
+    dest: "{{ hostvars[inventory_hostname]['smartd_conf_dest'] ~ '/' ~ 'smartd.conf' }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    validate: "smartd -q onecheck -c %s"

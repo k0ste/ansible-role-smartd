@@ -21,6 +21,13 @@ Example configuration
 # the hard drive and predict drive failures, and to carry out different types
 # of drive self-tests.
 
+# smartd attribute information (smartd CSV smart logs)
+smartd_attributelog_path: '/var/log/smartd'
+# Create or not smartd_attributelog_path.
+smartd_create_attrbutelog_path: 'true'
+# Install smartmontools package or not.
+smartd_install_package: 'false'
+
 smartd:
 - smartd_devices:
 # Example - enable experimenatl nvme support and set

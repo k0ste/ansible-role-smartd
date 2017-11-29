@@ -1,0 +1,10 @@
+---
+- include: pre_requisite.yml
+- include: packages.yml
+  when:
+  - "hostvars[inventory_hostname]['smartd_install_package'] is defined"
+  - "hostvars[inventory_hostname]['smartd_install_package'] == 'true'"
+- include: deploy_smartd.yml
+  when:
+  - "hostvars[inventory_hostname]['smartd'] is defined"
+  - "hostvars[inventory_hostname]['smartd'] != ''"

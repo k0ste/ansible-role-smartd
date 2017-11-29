@@ -1,0 +1,16 @@
+---
+- name: smartd | Add the OS specific variables
+  include_vars: "{{ hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
+- name: smartd | Create smartd attribute log directory
+  file:
+    path: "{{ hostvars[inventory_hostname]['smartd_attributelog_path'] }}"
+    state: "directory"
+    group: "root"
+    owner: "root"
+    mode: "0755"
+    recurse: "no"
+  when:
+  - "hostvars[inventory_hostname]['smartd_attributelog_path'] is defined"
+  - "hostvars[inventory_hostname]['smartd_attributelog_path'] != ''"
+  - "hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] is defined"
+  - "hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] == 'true'"
