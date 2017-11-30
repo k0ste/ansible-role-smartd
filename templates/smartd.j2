@@ -1,0 +1,18 @@
+{{ '## ' + 'smartd.conf' }}
+{{ '# ' + ansible_managed }}
+{{ '# ' + 'Do not edit manually' }}
+
+{% for d in vars['smartd_devices'] %}
+{% if d.name is defined and d.name != '' %}
+{% if d.name == 'all' %}
+{{ 'DEVICESCAN' -}}
+{% else %}
+{{ d.name -}}
+{% endif %}
+{% if d.mode_all is defined and d.mode_all == 'true' %}
+{{ ' -a' -}}
+{% endif %}
+{% include 'smartd_conf.j2' %}
+{{ '' }}
+{% endif %}
+{% endfor %}

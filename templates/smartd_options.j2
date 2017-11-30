@@ -1,0 +1,56 @@
+{{ '## ' + 'smartd environ' }}
+{{ '# ' + ansible_managed }}
+{{ '# ' + 'Do not edit manually' }}
+
+{% for o in vars['smartd_options'] %}
+{% if loop.first %}
+{{ hostvars[inventory_hostname]['smartd_env_args'] ~ '=\"' -}}
+{% endif %}
+{% if o.attributelog is defined and o.attributelog != '' %}
+{{ ' --attributelog ' ~ o.attributelog -}}
+{% endif %}
+{% if o.drivedb is defined and o.drivedb != '' %}
+{{ ' --drivedb ' ~ o.drivedb -}}
+{% endif %}
+{% if o.configfile is defined and o.configfile != '' %}
+{{ ' --configfile ' ~ o.configfile -}}
+{% endif %}
+{% if o.capabilities is defined and o.capabilities != '' %}
+{{ ' --capabilities ' ~ o.capabilities -}}
+{% endif %}
+{% if o.debug is defined and o.debug != '' %}
+{{ ' --debug ' ~ o.debug -}}
+{% endif %}
+{% if o.showdirectives is defined and o.showdirectives != '' %}
+{{ ' --showdirectives ' ~ o.showdirectives -}}
+{% endif %}
+{% if o.interval is defined and o.interval != '' %}
+{{ ' --interval ' ~ o.interval -}}
+{% endif %}
+{% if o.logfacility is defined and o.logfacility != '' %}
+{{ ' --logfacility ' ~ o.logfacility -}}
+{% endif %}
+{% if o.nofork is defined and o.nofork == 'true' %}
+{{ ' --no-fork' -}}
+{% endif %}
+{% if o.pidfile is defined and o.pidfile != '' %}
+{{ ' --pidfile ' ~ o.pidfile -}}
+{% endif %}
+{% if o.quit is defined and o.quit in ['nodev', 'errors', 'nodevstartup',
+                                       'never', 'onecheck', 'showtests'] %}
+{{ ' --quit ' ~ o.quit -}}
+{% endif %}
+{% if o.report is defined and o.report in ['ioctl', 'ataioctl',
+                                           'scsiioctl', 'nvmeioctl'] %}
+{{ ' --report ' ~ o.report -}}
+{% endif %}
+{% if o.savestates is defined and o.savestates != '' %}
+{{ ' --savestates ' ~ o.savestates -}}
+{% endif %}
+{% if o.warnexec is defined and o.warnexec != '' %}
+{{ ' --warnexec ' ~ o.warnexec -}}
+{% endif %}
+{% if loop.last %}
+{{ '\"' }}
+{% endif %}
+{% endfor %}

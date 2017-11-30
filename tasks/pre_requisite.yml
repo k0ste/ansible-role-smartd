@@ -1,6 +1,13 @@
 ---
 - name: smartd | Add the OS specific variables
   include_vars: "{{ hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
+- name: smartd | Set facts about configuration
+  set_fact:
+    smartd_devices: "{{ hostvars[inventory_hostname]['smartd'] | json_query('[].smartd_devices[]') }}"
+    smartd_options: "{{ hostvars[inventory_hostname]['smartd'] | json_query('[].smartd_options[]') }}"
+  when:
+  - "hostvars[inventory_hostname]['smartd'] is defined"
+  - "hostvars[inventory_hostname]['smartd'] != ''"
 - name: smartd | Create smartd attribute log directory
   file:
     path: "{{ hostvars[inventory_hostname]['smartd_attributelog_path'] }}"

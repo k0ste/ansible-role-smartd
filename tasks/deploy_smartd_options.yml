@@ -1,0 +1,8 @@
+---
+- name: smartd | Generate smartd running options
+  template:
+    src: "smartd_options.j2"
+    dest: "{{ hostvars[inventory_hostname]['smartd_args_dest'] }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"

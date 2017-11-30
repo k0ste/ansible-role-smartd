@@ -6,5 +6,7 @@
   - "hostvars[inventory_hostname]['smartd_install_package'] == 'true'"
 - include: deploy_smartd.yml
   when:
-  - "hostvars[inventory_hostname]['smartd'] is defined"
-  - "hostvars[inventory_hostname]['smartd'] != ''"
+  - "vars['smartd'] is defined"
+- include: deploy_smartd_options.yml
+  when:
+  - "vars['smartd_options'] is defined"

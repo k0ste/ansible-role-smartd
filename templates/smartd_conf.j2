@@ -1,0 +1,137 @@
+{% if d.d is defined and d.d != '' %}
+{{ ' -d ' ~ d.d -}}
+{% endif %}
+{% if d.n is defined and d.n != '' %}
+{{ ' -n ' ~ d.n -}}
+{% endif %}
+{% if d.T is defined and d.T in ['normal', 'permissive'] %}
+{{ ' -T ' ~ d.T -}}
+{% endif %}
+{% if d.o is defined and d.o in ['on', 'off'] %}
+{{ ' -o ' ~ d.o -}}
+{% endif %}
+{% if d.S is defined and d.S in ['on', 'off'] %}
+{{ ' -S ' ~ d.S -}}
+{% endif %}
+{% if d.H is defined and d.H == 'true' %}
+{{ ' -H' -}}
+{% endif %}
+{% if d.l is defined and d.l != '' %}
+{% if d.l is string %}
+{{ ' -l ' ~ d.l -}}
+{% elif d.l is sequence %}
+{% for l in d.l %}
+{{ ' -l ' ~ l -}}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.e is defined and d.e != '' %}
+{% if d.e is string %}
+{{ ' -e ' ~ d.e -}}
+{% elif d.e is sequence %}
+{% for e in d.e %}
+{{ ' -e ' ~ e -}}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.s is defined and d.s != '' %}
+{{ ' -s ' ~ d.s -}}
+{% endif %}
+{% if d.m is defined and d.m != '' %}
+{% if d.m is string %}
+{{ ' -m ' ~ d.m -}}
+{% elif d.m is sequence %}
+{{ ' -m ' + d.m | join(',') -}}
+{% endif %}
+{% endif %}
+{% if d.M is defined and d.M != '' %}
+{% if d.M is string %}
+{{ ' -M ' ~ d.M -}}
+{% elif d.M is sequence %}
+{% for m in d.M %}
+{{ ' -M ' ~ m -}}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.f is defined and d.f == 'true' %}
+{{ ' -f' -}}
+{% endif %}
+{% if d.p is defined and d.p == 'true' %}
+{{ ' -p' -}}
+{% endif %}
+{% if d.u is defined and d.u == 'true' %}
+{{ ' -u' -}}
+{% endif %}
+{% if d.t is defined and d.t == 'true' %}
+{{ ' -t' -}}
+{% endif %}
+{% if d.i is defined and d.i != '' %}
+{% if d.i is string %}
+{{ ' -i ' ~ d.i -}}
+{% elif d.i is sequence %}
+{% for i in d.i %}
+{{ ' -i ' ~ i -}}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.I is defined and d.I != '' %}
+{% if d.I is string %}
+{{ ' -I ' ~ d.I -}}
+{% elif d.I is sequence %}
+{% for i in d.I %}
+{{ ' -I ' ~ i -}}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.r is defined and d.r != '' %}
+{% if d.r is string %}
+{{ ' -r ' ~ d.r -}}
+{% elif d.r is sequence %}
+{% for r in d.r %}
+{{ ' -r ' ~ r -}}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.R is defined and d.R != '' %}
+{% if d.R is string %}
+{{ ' -R ' ~ d.R -}}
+{% elif d.R is sequence %}
+{% for r in d.R %}
+{{ ' -R ' ~ r -}}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.C is defined and d.C != '' %}
+{{ ' -C ' ~ d.C -}}
+{% endif %}
+{% if d.U is defined and d.U != '' %}
+{{ ' -U ' ~ d.U -}}
+{% endif %}
+{% if d.W is defined and d.W != '' %}
+{{ ' -W ' ~ d.W -}}
+{% endif %}
+{% if d.F is defined and d.F != '' %}
+{% if d.F is string and d.F in ['none', 'nologdir', 'samsung', 'samsung2',
+                                'samsung3', 'xerrorlba'] %}
+{{ ' -F ' ~ d.F -}}
+{% elif d.F is sequence %}
+{% for f in d.F %}
+{% if f in ['none', 'nologdir', 'samsung', 'samsung2', 'samsung3',
+            'xerrorlba'] %}
+{{ ' -F ' ~ f -}}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.v is defined and d.v != '' %}
+{% if d.v is string %}
+{{ ' -v ' ~ d.v -}}
+{% elif d.v is sequence %}
+{% for v in d.v %}
+{{ ' -v ' ~ v -}}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% if d.P is defined and d.P in ['use', 'ignore', 'show', 'showall'] %}
+{{ ' -P ' ~ d.P -}}
+{% endif %}

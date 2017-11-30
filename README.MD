@@ -3,28 +3,25 @@ ansible-smartd
 
 `smartd` is a daemon that monitors the Self-Monitoring, Analysis and Reporting
 Technology (SMART) system built into most ATA/SATA and SCSI/SAS hard drives and
-olid-state drives.
+solid-state drives. The purpose of SMART is to monitor the reliability of the
+hard drive and predict drive failures, and to carry out different types of
+drive self-tests.
 
 Requirements
 ---------------
 
-* Ansible 2.0;
+* Ansible 2.2;
+* jmespath;
 
 Example configuration
 -------------------------
 
 ```yaml
 ---
-# smartd is a daemon that monitors the Self-Monitoring, Analysis and Reporting
-# Technology (SMART) system built into most ATA/SATA and SCSI/SAS hard drives
-# and solid-state drives. The purpose of SMART is to monitor the reliability of
-# the hard drive and predict drive failures, and to carry out different types
-# of drive self-tests.
-
 # smartd attribute information (smartd CSV smart logs)
 smartd_attributelog_path: '/var/log/smartd'
 # Create or not smartd_attributelog_path.
-smartd_create_attrbutelog_path: 'true'
+smartd_create_attrbutelog_path: 'false'
 # Install smartmontools package or not.
 smartd_install_package: 'false'
 
@@ -44,12 +41,12 @@ smartd:
 # 'l selfteststs' to report changes of Self-Test execution status.
 # 'C 197' to report nonzero values of the current pending sector count.
 # 'U 198' to report nonzero values of the offline pending sector count.
-    mode: 'all'
+    mode_all: 'true'
     d: 'nvme'
 # Special name 'all': default for all devices (consult with 'smartd.conf' man).
   - name: 'all'
 # smartd will try to open all available devices (see 'smartd' man page).
-    mode: 'all'
+    mode_all: 'false'
 # Specifies the type of the device. Please consult with man page smartd.conf to
 # all possible values.
     d: 'auto'
@@ -102,11 +99,11 @@ smartd:
 # vendor-specific, but is typically four hours. Note that SMART Automatic
 # Offline Testing is not part of the ATA Specification. The valid arguments to
 # this Directive are on and off.
-    o: ''
+    o: 'on'
 # Enables or disables Attribute Autosave when smartd starts up and has no
 # further effect. Also affects SCSI devices. The valid arguments to this
 # directive are on and off.
-    S: ''
+    S: 'on'
 # [ATA] Check the health status of the disk with the SMART RETURN STATUS
 # command. If this command reports a failing health status, then disk failure
 # is predicted in less than 24 hours, and a message at loglevel 'LOG_CRIT' will
@@ -114,12 +111,57 @@ smartd:
 # [NVMe] Checks the "Critical Warning" byte from the SMART/Health Information
 # log. If any warning bit is set, a message at loglevel 'LOG_CRIT' will be
 # logged to syslog.
-    H: ''
-# Reports increases in the number of errors in one of three SMART logs. Please
-# consult with man page smartd.conf to all possible values.
-    l: ''
+    H: 'true'
+# Reports increases in the number of errors in one of three SMART logs. The
+# valid arguments to this Directive are:
+# error - [ATA] report if the number of ATA errors reported in the Summary
+# SMART error log has increased since the last check.
+# error - [NVMe] report if the "Number of Error Information Log Entries" from
+# the SMART/Health Information log has increased since the last check.
+# xerror - [ATA] report if the number of ATA errors reported in the Extended
+# Comprehensive SMART error log has increased since the last check.
+# If both 'error' and 'xerror' are specified, smartd checks the maximum of both
+# values.
+# xerror - [NVMe] same as 'error'.
+# selftest - report if the number of failed tests reported in the SMART
+# Self-Test Log has increased since the last check, or if the timestamp
+# associated with the most recent failed test has increased. Note that such
+# errors will only be logged if you run self-tests on the disk (and it fails a
+# test!). Self-Tests can be run automatically by smartd: please see the 's'.
+# [ATA only] Failed self-tests outdated by a newer successful extended
+# self-test are ignored. The warning email counter is reset if the number of
+# failed self tests dropped to 0. This typically happens when an extended
+# self-test is run after all bad sectors have been reallocated.
+# offlinests[,ns] - [ATA only] report if the Offline Data Collection status
+# has changed since the last check. The report will be logged as LOG_CRIT if
+# the new status indicates an error. With some drives the status often changes,
+# therefore "l: offlinests" is not enabled by 'a' Directive. Appending ',ns'
+# (no standby) to this directive is not implemented on Linux.
+# selfteststs[,ns] - [ATA only] report if the Self-Test execution status has
+# changed since the last check. The report will be logged as LOG_CRIT if the
+# new status indicates an error. Appending ',ns' (no standby) to this directive
+# is not implemented on Linux.
+# scterc,READTIME,WRITETIME - [ATA only] sets the SCT Error Recovery Control
+# settings to the specified values (deciseconds) when smartd starts up and has
+# no further effect. Values of 0 disable the feature, other values less than 65
+# are probably not supported.
+# For RAID configurations, this is typically set to 70,70 deciseconds.
+    l:
+    - 'error'
+    - 'selftest'
+    - 'selfteststs'
 # Sets non-SMART device settings when smartd starts up and has no further
-# effect. Please consult with man page smartd.conf to all possible values.
+# effect. Valid arguments are:
+#
+# aam,[N|off] - [ATA only] Sets the Automatic Acoustic Management (AAM) feature.
+# apm,[N|off] - [ATA only] Sets the Advanced Power Management (APM) feature.
+# lookahead,[on|off] - [ATA only] Sets the read look-ahead feature.
+# security-freeze - [ATA only] Sets ATA Security feature to frozen mode.
+# standby,[N|off] - [ATA only] Sets the standby (spindown) timer and places the
+# drive in the IDLE mode.
+# wcache,[on|off] - [ATA only] Sets the volatile write cache feature.
+# dsn,[on|off] - [ATA only] [NEW EXPERIMENTAL SMARTD FEATURE] Sets the DSN
+# feature.
     e: ''
 # Run Self-Tests or Offline Immediate Tests, at scheduled times. A Self or
 # Offline Immediate Test will be run at the end of periodic device polling, if
@@ -155,16 +197,16 @@ smartd:
 # new error, or if a SMART command to the disk fails.
 # To prevent your email inbox from getting filled up with warning messages, by
 # default only a single warning and (depending on 's' option) daily reminder
-# emails will be sent for each of the enabled alert types. To send email to
-# more than one user, please use the following "comma separated" form for the
-# address: 'user1@add1,user2@add2'.
-    m: ''
+# emails will be sent for each of the enabled alert types.
+    m:
+    - 'user1@add1'
+    - 'user2@add2'
 # These Directives modify the behavior of the smartd email warnings. Directives
 # only work in conjunction with the 'm' and can not be used without it.
 # The valid arguments to the are (one of the following three):
+#
 # once - send only one warning email for each type of disk problem detected.
 # This is the default unless state persistence ('s' option) is enabled.
-#
 # daily - send additional warning reminder emails, once per day, for each type
 # of disk problem detected. This is the default if state persistence
 # ('s' option) is enabled.
@@ -195,21 +237,23 @@ smartd:
 # the executable should send mail or write to a file or device.
 # Before running the executable, smartd sets a number of environment variables.
 # These environment variables may be used to control the executable's behavior.
-    M: ''
+    M:
+    - 'once'
+    - 'daily'
 # [ATA only] Check for 'failure' of any Usage Attributes. If these Attributes
 # are less than or equal to the threshold, it does NOT indicate imminent disk
 # failure. It "indicates an advisory condition where the usage or age of the
 # device has exceeded its intended design life period."
-    f: '' # bool
+    f: 'true'
 # [ATA only] Report anytime that a Prefail Attribute has changed its value
 # since the last check.
-    p: '' # bool
+    p: 'true'
 # [ATA only] Report anytime that a Usage Attribute has changed its value since
 # the last check.
-    u: '' # bool
+    u: 'true'
 # [ATA only] Equivalent to turning on the two previous flags 'p' and 'u'.
 # Tracks changes in all device Attributes (both Prefailure and Usage).
-    t: '' # bool
+    t: 'true'
 # [ATA only] Ignore device Attribute number ID when checking for failure of
 # Usage Attributes. ID must be a decimal integer in the range from 1 to 255.
 # This Directive modifies the behavior of the 'f' Directive and has no effect
@@ -320,7 +364,7 @@ smartd:
 # Celsius by default. For NVMe devices, smartd checks the maximum of the
 # Composite Temperature value and all Temperature Sensor values reported by
 # SMART/Health Information log.
-    W: ''
+    W: '0'
 # [ATA only] Modifies the behavior of smartd to compensate for some known and
 # understood device firmware bug. This directive may be used multiple times.
 # The valid arguments are:
@@ -414,17 +458,17 @@ smartd:
 # positive integer that can be represented on your system (often 2^31-1).
 # The default is 1800 seconds.
     interval: '1800'
-# Uses syslog facility to log the messages from smartd. Defaukt is: 'daemon'.
+# Uses syslog facility to log the messages from smartd. Default is: 'daemon'.
     logfacility: 'daemon'
 # Do not fork into background. This is useful when executed from modern init
 # methods like initng, minit, supervise or systemd.
-    nofork: 'true' # no-fork command!!!
+    nofork: 'true'
 # Writes pidfile containing the smartd Process ID number (PID). To avoid symlink
 # attacks make sure the directory to which pidfile is written is only writable
 # for root. Without this option, or if the '--debug' option is given, no PID
 # file is written on startup. If smartd is killed with a maskable signal then
 # the pidfile is removed.
-    pidfile: 'false'
+    pidfile: ''
 # Specifies when, if ever, smartd should exit. The valid arguments are to this
 # option are:
 # nodev - Exit if there are no devices to monitor, or if any errors are found at

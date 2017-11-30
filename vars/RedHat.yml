@@ -1,4 +1,6 @@
 ---
 smartd_conf_dest: '/etc/smartmontools'
+smartd_args_dest: '/etc/sysconfig/smartmontools'
+smartd_env_args: 'smartd_opts'
 smartd_package: 'smartmontools'
 smartd_service: 'smartd'
