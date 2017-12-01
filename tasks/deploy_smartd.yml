@@ -7,3 +7,5 @@
     group: "root"
     mode: "0644"
     validate: "smartd -q onecheck -c %s"
+  notify:
+  - "Start smartd"

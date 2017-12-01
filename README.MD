@@ -18,12 +18,14 @@ Example configuration
 
 ```yaml
 ---
-# smartd attribute information (smartd CSV smart logs)
+# smartd attribute information (smartd CSV smart logs).
 smartd_attributelog_path: '/var/log/smartd'
 # Create or not smartd_attributelog_path.
 smartd_create_attrbutelog_path: 'false'
 # Install smartmontools package or not.
 smartd_install_package: 'false'
+# Restart after successful deploy of configuration.
+smartd_restart: 'false'
 
 smartd:
 - smartd_devices:
