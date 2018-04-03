@@ -1,12 +1,12 @@
 ---
-- include: pre_requisite.yml
-- include: packages.yml
+- include_tasks: pre_requisite.yml
+- include_tasks: packages.yml
   when:
   - "hostvars[inventory_hostname]['smartd_install_package'] is defined"
   - "hostvars[inventory_hostname]['smartd_install_package'] == 'true'"
-- include: deploy_smartd.yml
+- include_tasks: deploy_smartd.yml
   when:
   - "vars['smartd'] is defined"
-- include: deploy_smartd_options.yml
+- include_tasks: deploy_smartd_options.yml
   when:
   - "vars['smartd_options'] is defined"

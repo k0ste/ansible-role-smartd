@@ -1,5 +1,5 @@
 ---
-- name: smartd | Generate smartd running options
+- name: smartd | Deploy smartd running options
   template:
     src: "smartd_options.j2"
     dest: "{{ hostvars[inventory_hostname]['smartd_args_dest'] }}"
@@ -7,4 +7,4 @@
     group: "root"
     mode: "0644"
   notify:
-  - "Start smartd"
+  - "Restart smartd"

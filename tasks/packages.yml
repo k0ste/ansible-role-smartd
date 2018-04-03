@@ -2,20 +2,21 @@
 - name: smartd | Install the required packages in Redhat derivatives
   yum:
     name: "{{ hostvars[inventory_hostname]['smartd_package'] }}"
-    state: "installed"
+    state: "present"
+    update_cache: "yes"
   when:
   - "hostvars[inventory_hostname]['ansible_os_family'] == 'RedHat'"
 - name: smartd | Install the required packages in Debian derivatives
   apt:
     name: "{{ hostvars[inventory_hostname]['smartd_package'] }}"
-    state: "installed"
+    state: "present"
     update_cache: "yes"
   when:
   - "hostvars[inventory_hostname]['ansible_os_family'] == 'Debian'"
 - name: smartd | Install the required packages in ArchLinux derivatives
   pacman:
     name: "{{ hostvars[inventory_hostname]['smartd_package'] }}"
-    state: "installed"
+    state: "present"
     update_cache: "yes"
   when:
   - "hostvars[inventory_hostname]['ansible_os_family'] == 'Archlinux'"

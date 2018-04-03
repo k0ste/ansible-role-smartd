@@ -1,5 +1,4 @@
-ansible-smartd
-=================
+# ansible-smartd
 
 `smartd` is a daemon that monitors the Self-Monitoring, Analysis and Reporting
 Technology (SMART) system built into most ATA/SATA and SCSI/SAS hard drives and
@@ -7,14 +6,11 @@ solid-state drives. The purpose of SMART is to monitor the reliability of the
 hard drive and predict drive failures, and to carry out different types of
 drive self-tests.
 
-Requirements
----------------
+## Requirements
 
-* Ansible 2.2;
-* jmespath;
+* Ansible 2.4;
 
-Example configuration
--------------------------
+## Example configuration
 
 ```yaml
 ---
