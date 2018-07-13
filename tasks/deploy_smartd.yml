@@ -2,8 +2,8 @@
 - name: smartd | Deploy smartd.conf
   template:
     src: "smartd.j2"
-    dest: "{{ hostvars[inventory_hostname]['smartd_conf_dest'] ~ '/'
-              ~ 'smartd.conf' }}"
+    dest: "{{
+      hostvars[inventory_hostname]['smartd_conf_dest'] ~ '/' ~ 'smartd.conf' }}"
     owner: "root"
     group: "root"
     mode: "0644"
