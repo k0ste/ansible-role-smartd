@@ -1,18 +1,18 @@
 ---
 - name: smartd | Add the OS specific variables
-  include_vars: "{{ hostvars[inventory_hostname]['ansible_os_family'] +
-                    '.yml' }}"
+  ansible.builtin.include_vars:
+    file: "{{ hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
 - name: smartd | Set facts about configuration
-  set_fact:
+  ansible.builtin.set_fact:
     smartd_devices: "{{ hostvars[inventory_hostname]['smartd'] |
-                        json_query('[].smartd_devices[]') }}"
+      community.general.json_query('[].devices[]') }}"
     smartd_options: "{{ hostvars[inventory_hostname]['smartd'] |
-                        json_query('[].smartd_options[]') }}"
+      community.general.json_query('[].options[]') }}"
   when:
-  - "hostvars[inventory_hostname]['smartd'] is defined"
-  - "hostvars[inventory_hostname]['smartd'] != ''"
+    - "hostvars[inventory_hostname]['smartd'] is defined"
+    - "hostvars[inventory_hostname]['smartd'] != ''"
 - name: smartd | Create smartd attribute log directory
-  file:
+  ansible.builtin.file:
     path: "{{ hostvars[inventory_hostname]['smartd_attributelog_path'] }}"
     state: "directory"
     group: "root"
@@ -20,7 +20,7 @@
     mode: "0755"
     recurse: "no"
   when:
-  - "hostvars[inventory_hostname]['smartd_attributelog_path'] is defined"
-  - "hostvars[inventory_hostname]['smartd_attributelog_path'] != ''"
-  - "hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] is defined"
-  - "hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] == 'true'"
+    - "hostvars[inventory_hostname]['smartd_attributelog_path'] is defined"
+    - "hostvars[inventory_hostname]['smartd_attributelog_path'] != ''"
+    - "hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] is defined"
+    - "hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] == 'true'"

@@ -1,12 +1,18 @@
 ---
-- import_tasks: pre_requisite.yml
-- include_tasks: packages.yml
+- import_tasks: "pre_requisite.yml"
+- include_tasks: "packages.yml"
   when:
-  - "hostvars[inventory_hostname]['smartd_install_package'] is defined"
-  - "hostvars[inventory_hostname]['smartd_install_package'] == 'true'"
-- include_tasks: deploy_smartd.yml
+    - "hostvars[inventory_hostname]['smartd'] is defined"
+    - "hostvars[inventory_hostname]['smartd'] != ''"
+    - "hostvars[inventory_hostname]['smartd'] |
+       community.general.json_query(vars['smartd_install_package']) is defined"
+    - "hostvars[inventory_hostname]['smartd'] |
+       community.general.json_query(vars['smartd_install_package']) == 'true'"
+  vars:
+    smartd_install_package: "[] | map(&install_package || 'false', @) | [0]"
+- include_tasks: "deploy_smartd.yml"
   when:
-  - "vars['smartd'] is defined"
-- include_tasks: deploy_smartd_options.yml
+    - "vars['smartd'] is defined"
+- include_tasks: "deploy_smartd_options.yml"
   when:
-  - "vars['smartd_options'] is defined"
+    - "vars['smartd_options'] is defined"

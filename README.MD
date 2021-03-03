@@ -1,4 +1,4 @@
-# ansible-smartd
+# smartd
 
 `smartd` is a daemon that monitors the Self-Monitoring, Analysis and Reporting
 Technology (SMART) system built into most ATA/SATA and SCSI/SAS hard drives and
@@ -8,7 +8,7 @@ drive self-tests.
 
 ## Requirements
 
-* Ansible 2.5+;
+* Ansible 3.0.0+;
 
 ## Example configuration
 
@@ -18,13 +18,13 @@ drive self-tests.
 smartd_attributelog_path: '/var/log/smartd'
 # Create or not smartd_attributelog_path.
 smartd_create_attrbutelog_path: 'false'
-# Install smartmontools package or not.
-smartd_install_package: 'false'
-# Restart after successful deploy of configuration.
-smartd_restart: 'false'
 
 smartd:
-- smartd_devices:
+# Install smartmontools package or not.
+- install_package: 'false'
+# Restart after successful deploy of configuration.
+  restart: 'false'
+  devices:
 # Example - enable experimenatl nvme support and set
   - name: '/dev/nvme0n1'
 # 'true' - device scan enabled, options are parsed.
@@ -409,7 +409,7 @@ smartd:
 # showall - show the presets that are available for all drives and then exit.
     P: 'use'
 # With this options smartd will be started.
-  smartd_options:
+  options:
 # Writes smartd attribute information (normalized and raw attribute values) to
 # files 'path/MODEL-SERIAL.ata.csv' or 'path/VEN‐DOR-MODEL-SERIAL.scsi.csv'.
 # At each check cycle attributes are logged as a line of semicolon separated

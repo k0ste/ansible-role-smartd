@@ -1,19 +1,19 @@
 ---
 - name: smartd | Deploy smartd.conf
-  template:
+  ansible.builtin.template:
     src: "smartd.j2"
     dest: "{{
-      hostvars[inventory_hostname]['smartd_conf_dest'] ~ '/' ~ 'smartd.conf' }}"
+      hostvars[inventory_hostname]['smartd_conf_dest'] + '/' ~ 'smartd.conf' }}"
     owner: "root"
     group: "root"
     mode: "0644"
     validate: "smartd -q onecheck -c %s"
   notify:
-  - "Restart smartd"
+    - "Restart smartd"
 - name: smartd | Enable smartd service
   service:
     name: "{{ hostvars[inventory_hostname]['smartd_service'] }}"
     enabled: "yes"
   when:
-  - "hostvars[inventory_hostname]['smartd_enable'] is defined"
-  - "hostvars[inventory_hostname]['smartd_enable'] == 'true'"
+    - "hostvars[inventory_hostname]['smartd_enable'] is defined"
+    - "hostvars[inventory_hostname]['smartd_enable'] == 'true'"

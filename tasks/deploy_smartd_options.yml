@@ -1,10 +1,10 @@
 ---
 - name: smartd | Deploy smartd running options
-  template:
+  ansible.builtin.template:
     src: "smartd_options.j2"
     dest: "{{ hostvars[inventory_hostname]['smartd_args_dest'] }}"
     owner: "root"
     group: "root"
     mode: "0644"
   notify:
-  - "Restart smartd"
+    - "Restart smartd"
