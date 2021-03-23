@@ -20,10 +20,15 @@ smartd_attributelog_path: '/var/log/smartd'
 smartd_create_attrbutelog_path: 'false'
 
 smartd:
-# Install smartmontools package or not.
-- install_package: 'false'
-# Restart after successful deploy of configuration.
-  restart: 'false'
+# Enable smartd service or not
+- enable: 'true'
+# Restart smartd service after deploy or not
+  restart: 'true'
+# Install smartd package or not
+  install_package: 'true'
+# 'present' (do nothing if package is already installed) or 'latest' (always
+# upgrade to last version)
+  package_state: 'latest'
   devices:
 # Example - enable experimenatl nvme support and set
   - name: '/dev/nvme0n1'

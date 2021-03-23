@@ -8,9 +8,27 @@
       community.general.json_query('[].devices[]') }}"
     smartd_options: "{{ hostvars[inventory_hostname]['smartd'] |
       community.general.json_query('[].options[]') }}"
+    smartd_package_state: "{{ hostvars[inventory_hostname]['smartd'] |
+      community.general.json_query('[].package_state | [0]') }}"
   when:
     - "hostvars[inventory_hostname]['smartd'] is defined"
     - "hostvars[inventory_hostname]['smartd'] != ''"
+- name: smartd | Assert that smartd package state in valid value
+  ansible.builtin.assert:
+    that:
+      - "vars['smartd_package_state'] in ['present', 'latest']"
+    msg: "'package_state' must be in 'present' or 'latest'."
+    quiet: "true"
+  when:
+    - "vars['smartd_package_state'] is defined"
+    - "vars['smartd_package_state'] != ''"
+- name: smartd | Create catalogs
+  ansible.builtin.file:
+    path: "{{ hostvars[inventory_hostname]['smartd_conf_dest'] }}"
+    state: "directory"
+    owner: "root"
+    group: "root"
+    mode: "0755"
 - name: smartd | Create smartd attribute log directory
   ansible.builtin.file:
     path: "{{ hostvars[inventory_hostname]['smartd_attributelog_path'] }}"
@@ -20,7 +38,8 @@
     mode: "0755"
     recurse: "no"
   when:
-    - "hostvars[inventory_hostname]['smartd_attributelog_path'] is defined"
-    - "hostvars[inventory_hostname]['smartd_attributelog_path'] != ''"
-    - "hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] is defined"
-    - "hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] == 'true'"
+    - "(hostvars[inventory_hostname]['smartd_attributelog_path'] is defined and
+      hostvars[inventory_hostname]['smartd_attributelog_path'] != '')"
+    - "(hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] is
+      defined and
+      hostvars[inventory_hostname]['smartd_create_attrbutelog_path'] == 'true')"

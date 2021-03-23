@@ -1,8 +1,14 @@
 ---
 - name: Restart smartd
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: "{{ hostvars[inventory_hostname]['smartd_service'] }}"
     state: "restarted"
   when:
-    - "hostvars[inventory_hostname]['smartd_restart'] is defined"
-    - "hostvars[inventory_hostname]['smartd_restart'] == 'true'"
+    - "hostvars[inventory_hostname]['smartd'] is defined"
+    - "hostvars[inventory_hostname]['smartd'] != ''"
+    - "hostvars[inventory_hostname]['smartd'] |
+       community.general.json_query(vars['smartd_restart']) is defined"
+    - "hostvars[inventory_hostname]['smartd'] |
+       community.general.json_query(vars['smartd_restart']) == 'true'"
+  vars:
+    smartd_restart: "[] | map(&restart || 'false', @) | [0]"
