@@ -1,7 +1,4 @@
 ---
 smartd_attributelog_path: '/var/log/smartd'
 smartd_create_attrbutelog_path: 'true'
-smartd_install_package: 'true'
-smartd_restart: 'true'
-smartd_enable: 'true'
 smartd: []
